@@ -1,7 +1,7 @@
 appnope==0.1.0
 backports.shutil-get-terminal-size==1.0.0
 decorator==4.0.9
-Django==1.5.8
+Django==1.8
 django-debug-toolbar==1.4
 django-extensions==1.6.7
 funcsigs==1.0.2
@@ -13,6 +13,7 @@ pathlib2==2.1.0
 pbr==1.10.0
 pexpect==4.1.0
 pickleshare==0.7.2
+psycopg2==2.6.1
 ptyprocess==0.5.1
 requests==2.10.0
 simplegeneric==0.8.1
