@@ -4,11 +4,11 @@ from django.core.exceptions import NON_FIELD_ERRORS
 class PaymentForm(forms.Form):
     def add_error(self,message):
         self._errors[NON_FIELD_ERRORS] = self.error_class([message])
-        
+
 class SigninForm(PaymentForm):
     email = forms.EmailField(required=True)
     password=forms.CharField(required=True, widget=forms.PasswordInput(render_value=False))
-    
+
 class CardForm(PaymentForm):
     last_4_digits= forms.CharField(
         required=True,
@@ -16,26 +16,26 @@ class CardForm(PaymentForm):
         max_length=4,
         widget=forms.HiddenInput()
     )
-    
+
     stripe_token = forms.CharField(
         required=True,
         widget=forms.HiddenInput(),
     )
-    
+
 class UserForm(CardForm):
     name=forms.CharField(required=True)
-   
+
     email=forms.EmailField(required=True)
-  
+
     password=forms.CharField(
         required=True,
-        label=(u'Password'),
+        label=('Password'),
         widget=forms.PasswordInput(render_value=False)
     )
-    
+
     verify_password= forms.CharField(
         required=True,
-        label=(u'Verify Password'),
+        label=('Verify Password'),
         widget=forms.PasswordInput(render_value=False)
     )
     
@@ -45,22 +45,5 @@ class UserForm(CardForm):
         ver_password = cleaned_data.get('verify_password')
         if password != ver_password:
             raise forms.ValidationError("Password not match")
-        
+
         return cleaned_data
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
