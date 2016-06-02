@@ -8,10 +8,11 @@ from payments.models import User
 from payments.forms import SigninForm
 from payments.views import sign_in, sign_out, soon, register
 
-from django.contrib.formtools.tests.wizard.wizardtests.forms import UserForm
+from django-formtools.tests.wizard.wizardtests.forms import UserForm
 import django_ecommerce.settings as settings
 
 import mock
+import socket
 
 
 class ViewTestMixins(object):
@@ -113,6 +114,25 @@ class RegisterPageTest(TestCase,ViewTestMixins):
         self.assertEqual(resp.content, "")
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(self.request.session['user'], new_user.pk)
+
+    def test_register_when_stripe_is_down(self):
+        self.request.session = {}
+        self.request.method = 'POST'
+
+        self.request.POST = { 'email':'stanimir@mail.bg',
+                              'name':'some_name',
+                              'stripe_id':'...',
+                              'last_4_digits':'4242',
+                              'password':'secret_password',
+                              'verify_password' : 'secret_password' }
+
+        with mock.patch('stripe.Customer.create', side_effect=socket.error("Can't connect to stripe")) as mock_stripe:
+
+            register(self.request)
+
+            users = User.objects.filter(email='stanimir@mail.bg')
+            self.assertEqual(len(user), 1)
+            self.assertEqual(stripe_id, '')
 
 
 class SignInPageTest(TestCase, ViewTestMixins):
