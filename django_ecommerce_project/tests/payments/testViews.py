@@ -5,10 +5,10 @@ from django.core.urlresolvers import resolve
 from django.shortcuts import render_to_response
 
 from payments.models import User
-from payments.forms import SigninForm
+from payments.forms import SigninForm, UserForm
 from payments.views import sign_in, sign_out, soon, register
 
-from django-formtools.tests.wizard.wizardtests.forms import UserForm
+#from formtools.tests.wizard.wizardtests.forms import UserForm
 import django_ecommerce.settings as settings
 
 import mock
@@ -44,6 +44,7 @@ class ViewTestMixins(object):
 class RegisterPageTest(TestCase,ViewTestMixins):
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         html = render_to_response(
             'register.html',
             {
@@ -72,25 +73,25 @@ class RegisterPageTest(TestCase,ViewTestMixins):
             self.assertEqual(resp.content, self.expected_html)
             self.assertEqual(user_mock.call_count, 1)
 
-    def test_register_new_user_succsesfuly(self):
-        self.request.session = {}
-        self.request.method = 'POST'
-
-        self.request.POST = { 'email':'stanimir@mail.bg',
-                              'name':'some_name',
-                              'stripe_id':'...',
-                              'last_4_digits':'4242',
-                              'password':'secret_password',
-                              'verify_password' : 'secret_password' }
-
-        with mock.patch('stripe.Customer') as stripe_mock:
-            config = {'create.return_value': mock.Mock()}
-            stripe_mock.configure_mock(**config)
-
-            resp = register(self.request)
-            self.assertEqual("", resp.content)
-            self.assertEqual(resp.status_code, 302)
-            self.assertEqual(self.request.session['user'],1)
+    # def test_register_new_user_succsesfuly(self, create_mock, stripe_mock):
+    #     self.request.session = {}
+    #     self.request.method = 'POST'
+    #
+    #     self.request.POST = { 'email':'stanimir@mail.bg',
+    #                           'name':'some_name',
+    #                           'stripe_id':'...',
+    #                           'last_4_digits':'4242',
+    #                           'password':'secret_password',
+    #                           'verify_password' : 'secret_password' }
+    #
+    #     with mock.patch('stripe.Customer') as stripe_mock:
+    #         config = {'create.return_value': mock.Mock()}
+    #         stripe_mock.configure_mock(**config)
+    #
+    #         resp = register(self.request)
+    #         self.assertEqual("", resp.content)
+    #         self.assertEqual(resp.status_code, 302)
+    #         self.assertEqual(self.request.session['user'],1)
 
     @mock.patch('stripe.Customer.create')
     @mock.patch.object(User, 'create')
@@ -111,9 +112,12 @@ class RegisterPageTest(TestCase,ViewTestMixins):
 
         resp = register(self.request)
 
-        self.assertEqual(resp.content, "")
+        self.assertEqual(resp.content, b"")
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(self.request.session['user'], new_user.pk)
+        create_mock.assert_called_with(
+            'pyRock', 'python@rocks.com', 'bad_password', '4242', new_cust.id
+        )
 
     def test_register_when_stripe_is_down(self):
         self.request.session = {}
@@ -139,6 +143,7 @@ class SignInPageTest(TestCase, ViewTestMixins):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         html = render_to_response('sign_in.html', {'form': SigninForm(), 'user': None})
         ViewTestMixins.setupViewTestr(url='/sign_in', view_func=sign_in, expected_html=html.content)
 
@@ -147,7 +152,12 @@ class SignOutPageTest(TestCase, ViewTestMixins):
 
     @classmethod
     def setUpClass(cls):
-        ViewTestMixins.setupViewTestr('/sign_out', sign_out, '', status_code = 302)
+        super().setUpClass()
+        ViewTestMixins.setupViewTestr(
+        '/sign_out',
+         sign_out,
+         b'',
+         status_code = 302)
 
     def setUp(self):
         self.request.session = {'user':'dummy'}

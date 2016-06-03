@@ -46,19 +46,19 @@ def register(request):
         form = UserForm(request.POST)
 
         if form.is_valid():
-#             custerm = stripe.Customer.create(
-#                  email=form.cleaned_data['email'],
-#                  description=form.cleaned_data['name'],
-#                  card=form.cleaned_data['stripe_token'],
-#                  plan='gold'
-#              )
-#
-            custerm = stripe.Charge.create(
-                 description=form.cleaned_data['email'],
+            custerm = stripe.Customer.create(
+                 email=form.cleaned_data['email'],
+                 description=form.cleaned_data['name'],
                  card=form.cleaned_data['stripe_token'],
-                 amount='5000',
-                 currency='usd',
+                 plan='gold'
              )
+
+            # custerm = stripe.Charge.create(
+            #      description=form.cleaned_data['email'],
+            #      card=form.cleaned_data['stripe_token'],
+            #      amount='5000',
+            #      currency='usd',
+            #  )
 
             cd = form.cleaned_data
 
@@ -71,7 +71,7 @@ def register(request):
                     password=cd['password']
                 )
             except IntegrityError:
-                form.add_error(user.email+" is already a mamber!")
+                form.add_error(user.email + " is already a mamber!")
             else:
                 request.session['user']=user.pk
                 return HttpResponseRedirect('/')
