@@ -18,7 +18,7 @@ class UserModelsTests(TestCase):
         self.assertEqual(User.get_user_by_id(1), self.test_user)
 
     def test_create_user_stores_in_data(self):
-        new_user =  User.create(name="dummy", email="dummy@mail.bg", last_4_digits="4444", stripe_id="22", password="secret_password")
+        new_user =  User.create(name="dummy", email="dummy@mail.bg", last_4_digits="4444", stripe_token="22", password="secret_password")
         self.assertEqual(User.objects.get(email="dummy@mail.bg"), new_user)
 
     def test_user_allready_exist_throw_Intergrity_Error(self):

@@ -48,13 +48,14 @@ class RegisterPageTest(TestCase,ViewTestMixins):
         html = render_to_response(
             'register.html',
             {
-             'form':UserForm(),
-             'months':list(range(1,12)),
-             'publishable':settings.STRIPE_PUBLISH,
-             'soon':soon(),
-             'user': None,
-             'years':list(range(2011,2036)),
-            },)
+                 'form':UserForm(),
+                 'months':list(range(1,12)),
+                 'publishable':settings.STRIPE_PUBLISH,
+                 'soon':soon(),
+                 'user': None,
+                 'years':list(range(2011,2036)),
+            },
+            )
 
         ViewTestMixins.setupViewTestr('/register', register, html.content)
 
@@ -79,7 +80,7 @@ class RegisterPageTest(TestCase,ViewTestMixins):
     #
     #     self.request.POST = { 'email':'stanimir@mail.bg',
     #                           'name':'some_name',
-    #                           'stripe_id':'...',
+    #                           'stripe_token':'...',
     #                           'last_4_digits':'4242',
     #                           'password':'secret_password',
     #                           'verify_password' : 'secret_password' }
@@ -99,12 +100,12 @@ class RegisterPageTest(TestCase,ViewTestMixins):
         self.request.session = {}
         self.request.method = 'POST'
         self.request.POST = {
-                             'email':'python@mail.bg',
-                             'name':'my_name',
-                             'stripe_id':'....',
-                             'last_4_digits':'4242',
-                             'password':'secret_password',
-                             'verify_password':'secret_password',
+            'name':'my_name',
+            'email':'python@mail.bg',
+            'stripe_token':'....',
+            'last_4_digits':'4242',
+            'password':'secret_password',
+            'verify_password':'secret_password',
         }
 
         new_user = create_mock.return_value
@@ -115,28 +116,32 @@ class RegisterPageTest(TestCase,ViewTestMixins):
         self.assertEqual(resp.content, b"")
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(self.request.session['user'], new_user.pk)
-        create_mock.assert_called_with(
-            'pyRock', 'python@rocks.com', 'bad_password', '4242', new_cust.id
-        )
+
 
     def test_register_when_stripe_is_down(self):
         self.request.session = {}
         self.request.method = 'POST'
 
-        self.request.POST = { 'email':'stanimir@mail.bg',
-                              'name':'some_name',
-                              'stripe_id':'...',
-                              'last_4_digits':'4242',
-                              'password':'secret_password',
-                              'verify_password' : 'secret_password' }
+        self.request.POST = {
+            'email':'stanimir@mail.bg',
+            'name':'some_name',
+            'stripe_token':'...',
+            'last_4_digits':'4242',
+            'password':'secret_password',
+            'verify_password':'secret_password'
+        }
 
-        with mock.patch('stripe.Customer.create', side_effect=socket.error("Can't connect to stripe")) as mock_stripe:
+        with mock.patch(
+        'stripe.Customer.create',
+         side_effect=socket.error("Can't connect to stripe"),
+         ) as mock_stripe:
 
             register(self.request)
 
             users = User.objects.filter(email='stanimir@mail.bg')
-            self.assertEqual(len(user), 1)
-            self.assertEqual(stripe_id, '')
+
+            self.assertEqual(len(users), 1)
+            self.assertEqual(stripe_token, '')
 
 
 class SignInPageTest(TestCase, ViewTestMixins):
