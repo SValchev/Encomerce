@@ -42,6 +42,9 @@ class ViewTestMixins(object):
 
 
 class RegisterPageTest(TestCase,ViewTestMixins):
+    ##########################
+    ## Setups and TearDowns ##
+    ##########################
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -63,6 +66,48 @@ class RegisterPageTest(TestCase,ViewTestMixins):
         request_factory = RequestFactory()
         request = request_factory.get(self.url)
 
+    #####################
+    ## Helpr Functions ##
+    #####################
+
+    def get_mock_cust():
+
+        class mock_cust():
+
+            @property
+            def id(self):
+                return 1234
+
+        return mock_cust()
+
+    def get_MockUserFocm(self):
+
+        from django import forms
+
+        class MockUserForm(forms.Forms):
+
+            def is_valid(self):
+                return True
+
+            @property
+            def cleaned_data(self):
+                return {
+                    'name':'my_name',
+                    'email':'python@mail.bg',
+                    'stripe_token':'....',
+                    'last_4_digits':'4242',
+                    'password':'secret_password',
+                    'verify_password':'secret_password',
+                }
+
+            def addError(self):
+                pass
+
+        return MockUserForm()
+
+    ###########
+    ## Tests ##
+    ###########
     def test_invalid_form_returns_register_page(self):
         with mock.patch('payments.forms.UserForm.is_valid') as user_mock:
             user_mock.return_value = False
@@ -94,9 +139,11 @@ class RegisterPageTest(TestCase,ViewTestMixins):
     #         self.assertEqual(resp.status_code, 302)
     #         self.assertEqual(self.request.session['user'],1)
 
-    @mock.patch('stripe.Customer.create')
-    @mock.patch.object(User, 'create')
-    def test_register_new_user_return_succesfully(self, create_mock, stripe_mock):
+
+    @mock.patch('payments.views.Customer.create',
+                return_value=get_mock_cust()
+    )
+    def test_register_new_user_return_succesfully(self, stripe_mock):
         self.request.session = {}
         self.request.method = 'POST'
         self.request.POST = {
@@ -107,16 +154,15 @@ class RegisterPageTest(TestCase,ViewTestMixins):
             'password':'secret_password',
             'verify_password':'secret_password',
         }
-
-        new_user = create_mock.return_value
-        new_cust = stripe_mock.return_value
-
         resp = register(self.request)
 
         self.assertEqual(resp.content, b"")
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(self.request.session['user'], new_user.pk)
 
+        user = User.objects.filter(email="python@mail.bg")
+
+        self.assertEqual(len(user), 1)
+        self.assertEqual(user[0].stripe_id, '1234')
 
     def test_register_when_stripe_is_down(self):
         self.request.session = {}

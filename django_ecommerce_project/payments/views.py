@@ -12,14 +12,13 @@ from locale import currency
 
 stripe.api_key=settings.STRIPE_SECRET
 
-
 def soon():
     soon = datetime.date.today() + datetime.timedelta(days=30)
     return {'month':soon.month, 'year':soon.year }
 
 
 def sign_in(request):
-    user=None
+    user = None
 
     if request.method == 'POST':
         form = SigninForm(request.POST)
@@ -62,7 +61,7 @@ def register(request):
             #      card=form.cleaned_data['stripe_token'],
             #      amount='5000',
             #      currency='usd',
-            #  )
+            # )
 
             cd = form.cleaned_data
 
@@ -71,9 +70,13 @@ def register(request):
                     name=cd['name'],
                     email=cd['email'],
                     last_4_digits=cd['last_4_digits'],
-                    stripe_token='',
+                    stripe_id='',
                     password=cd['password']
                 )
+
+                if customer:
+                    user.stripe_id = customer.id
+                    user.save()
             except IntegrityError:
                 form.add_error(user.email + " is already a mamber!")
             else:
@@ -83,7 +86,6 @@ def register(request):
     else:
         form = UserForm()
 
-    print("finish")
     return render_to_response(
             'register.html',
             {
@@ -123,7 +125,6 @@ def edit(request):
         else:
             form=CardForm()
 
-
         return render_to_response(
             'edit.html',
             {
@@ -138,7 +139,6 @@ def edit(request):
 
 
 class Customer(object):
-
     @classmethod
     def create(cls, billing_method="subscritpion", **kwargs):
         try:
