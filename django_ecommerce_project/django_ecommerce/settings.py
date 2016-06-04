@@ -20,7 +20,7 @@ DB_ENGINE = 'django.db.backends.sqlite3' if DEBUG else'django.db.backends.postgr
 
 DATABASES = {
     'default': {
-        'ENGINE':DB_ENGINE,
+        'ENGINE':'django.db.backends.sqlite3',
         #'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'test.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:

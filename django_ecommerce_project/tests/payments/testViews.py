@@ -4,7 +4,7 @@ from django.test.client import RequestFactory
 from django.core.urlresolvers import resolve
 from django.shortcuts import render_to_response
 
-from payments.models import User
+from payments.models import User, UnpadaidUser
 from payments.forms import SigninForm, UserForm
 from payments.views import sign_in, sign_out, soon, register
 
@@ -184,10 +184,11 @@ class RegisterPageTest(TestCase,ViewTestMixins):
 
             register(self.request)
 
-            users = User.objects.filter(email='stanimir@mail.bg')
+            unpaid_users = UnpadaidUser.objects.filter(email='stanimir@mail.bg')
 
-            self.assertEqual(len(users), 1)
+            self.assertEqual(len(unpaid_users), 1)
             self.assertEqual(stripe_token, '')
+            self.assertIsNotNone(unpaid_users[0].last_notification)
 
 
 class SignInPageTest(TestCase, ViewTestMixins):

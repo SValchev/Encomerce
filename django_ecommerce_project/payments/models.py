@@ -1,5 +1,10 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser
+
+class UnpadaidUser(models.Model):
+    email = models.CharField(max_length=225, unique=True)
+    last_notification = models.DateTimeField(default=timezone.now)
 
 # Create your models here.
 class User(AbstractBaseUser):
