@@ -4,8 +4,10 @@ import os
 STRIPE_SECRET='sk_test_Yw2EAz4rF2ml38YHT8DJs58S'
 STRIPE_PUBLISH='pk_test_BPwEcGVA5hLCfhItpwDdqHxa'
 
+
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 SITE_ROOT = os.path.dirname(PROJECT_ROOT)
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -13,6 +15,9 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
+
+
+
 
 MANAGERS = ADMINS
 
@@ -75,14 +80,18 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL ='/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, 'static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+print(STATICFILES_DIRS[0])
+
 
 # List of finder classes that know how to find static files in
 # various locations.

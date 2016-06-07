@@ -117,11 +117,11 @@ def edit(request):
         if form.is_valid():
 
             customer=stripe.Customer.retrieve(user.stripe_token)
-            customer.card=form.cleaned_data['stripe_token']
+            customer.card = form.cleaned_data['stripe_token']
             customer.save()
 
-            user.last_4_digits=form.cleaned_data['last_4_digits']
-            user.stripe_token=customer.id
+            user.last_4_digits = form.cleaned_data['last_4_digits']
+            user.stripe_token = customer.id
             user.save()
 
             return HttpResponseRedirect('/')

@@ -3,6 +3,7 @@ from django.test.client import RequestFactory
 
 from django.core.urlresolvers import resolve
 from django.shortcuts import render_to_response
+from django.db import IntegrityError
 
 from payments.models import User, UnpadaidUser
 from payments.forms import SigninForm, UserForm
@@ -141,8 +142,7 @@ class RegisterPageTest(TestCase,ViewTestMixins):
 
 
     @mock.patch('payments.views.Customer.create',
-                return_value=get_mock_cust()
-    )
+                return_value=get_mock_cust())
     def test_register_new_user_return_succesfully(self, stripe_mock):
         self.request.session = {}
         self.request.method = 'POST'
@@ -163,6 +163,32 @@ class RegisterPageTest(TestCase,ViewTestMixins):
 
         self.assertEqual(len(user), 1)
         self.assertEqual(user[0].stripe_id, '1234')
+
+    @mock.patch('payments.models.UnpadaidUser.save',
+                side_effect=IntegrityError,)
+    def test_register_stripe_is_down_all_or_nothing(self, save_mock):
+            self.request.session = {}
+            self.request.method = 'POST'
+            self.request.POST = {
+                'name':'my_name',
+                'email':'python@mail.bg',
+                'stripe_token':'....',
+                'last_4_digits':'4242',
+                'password':'secret_password',
+                'verify_password':'secret_password',
+            }
+
+            with mock.patch('stripe.Customer.create', side_effect=socket.error('Can not connect to Stripe')) as stripe_mock:
+
+                resp = register(self.request)
+
+                user = User.objects.filter(email="python@mail.bg")
+                self.assertEqual(len(user), 0)
+
+                unpaid_users = UnpadaidUser.objects.filter(email="python@mail.bg")
+                self.assertEqual(len(unpaid_users), 1)
+
+
 
     def test_register_when_stripe_is_down(self):
         self.request.session = {}
