@@ -36,7 +36,7 @@ def sign_in(request):
 
     print((form.non_field_errors()))
 
-    return render_to_response('sign_in.html',{'form':form, 'user':user}, context_instance=RequestContext(request))
+    return render_to_response('payments/sign_in.html',{'form':form, 'user':user}, context_instance=RequestContext(request))
 
 
 def sign_out(request):
@@ -91,7 +91,7 @@ def register(request):
         form = UserForm()
 
     return render_to_response(
-            'register.html',
+            'payments/register.html',
             {
              'form':form,
              'months':list(range(1,12)),
@@ -130,7 +130,7 @@ def edit(request):
             form=CardForm()
 
         return render_to_response(
-            'edit.html',
+            'payments/edit.html',
             {
                 'form':form,
                 'publishable':settings.STRIPE_PUBLISH,
