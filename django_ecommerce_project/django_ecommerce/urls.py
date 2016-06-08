@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     url(r'^$', 'main.views.index', name='home'),
     url(r'^pages/',include('django.contrib.flatpages.urls')),
     url(r'^contact','contact.views.contact', name='contact'),
-   
+
     #User registration
     url(r'^sign_in$',views.sign_in, name='sign_in' ),
     url(r'^sign_out$',views.sign_out, name='sign_out' ),
