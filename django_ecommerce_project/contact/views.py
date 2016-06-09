@@ -6,7 +6,9 @@ from django.contrib import messages
 
 def contact(request):
     if request.method == 'POST':
+        print(request.POST)
         form = ContactView(request.POST)
+        print(form.is_valid())
         if form.is_valid():
             our_form = form.save(commit=False)
             our_form.save()
@@ -14,14 +16,12 @@ def contact(request):
                                  request,
                                  messages.INFO,
                                  'Your message has been sent thank you!')
-            
+
             return HttpResponseRedirect('/')
     else:
         form = ContactView()
-    
-    t=loader.get_template('contact.html')
-    c=RequestContext(request,{'form':form},)
-    
+
+    t = loader.get_template('contact/contact.html')
+    c = RequestContext(request, {'form':form},)
+
     return HttpResponse(t.render(c))
-        
-            

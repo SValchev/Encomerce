@@ -90,8 +90,6 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-print(STATICFILES_DIRS[0])
-
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -138,6 +136,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap3',
     'formtools',
     #'django_extensions',
     #'django-debug-toolbar',
