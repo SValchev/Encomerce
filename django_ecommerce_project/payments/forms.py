@@ -29,7 +29,7 @@ class UserForm(CardForm):
 
     HORDE_ALLIANCE = (("alliance", "alliance"),
                       ("horde",'horde'))
-    fraction = forms.Select(widget=forms.RadioSelect ,choices=HORDE_ALLIANCE)
+    fraction = forms.ChoiceField(widget=forms.RadioSelect ,choices=HORDE_ALLIANCE)
 
     password = forms.CharField(
         required=True,

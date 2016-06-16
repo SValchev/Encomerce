@@ -1,6 +1,8 @@
-{% load staticfiles %} {% load main_gravatar %}
+{% load staticfiles %}
+{% load main_gravatar %}
+{% load main_index %}
 <div class="card hovercard">
-	<div class="cardheader" stype="background:{% static " img/horde-background.jpg "%}";>
+	<div class="cardheader" style='{% get_style fraction=user.fraction %}'>
 
 	</div>
 	<div class="avatar">
@@ -8,7 +10,7 @@
 	</div>
 	<div class="info">
 		<div class="title">
-			<a target="_blank" href="http://scripteden.com/">{{ user.name }}</a>
+			<a target="_blank" href="">{{ user.name }}</a>
 		</div>
 		<div class="desc"><strong>Rank: </strong>{{ user.rank }}</div>
 		<div class="desc"><strong>Class: </strong>High Shaman</div>

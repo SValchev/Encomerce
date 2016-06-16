@@ -53,7 +53,7 @@ def register(request):
     user = None
     if request.method == 'POST':
         form = UserForm(request.POST)
-
+        print(form.is_valid())
         if form.is_valid():
             #update based on your billing method (subscription vs one time)
             # customer = Customer.create(
@@ -72,6 +72,7 @@ def register(request):
                 amount="5000",
                 currency="usd"
             )
+
 
             cd = form.cleaned_data
 

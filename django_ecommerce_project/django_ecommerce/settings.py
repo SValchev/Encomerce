@@ -16,9 +16,6 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-
-
-
 MANAGERS = ADMINS
 
 DB_ENGINE = 'django.db.backends.sqlite3' if DEBUG else'django.db.backends.postgresql_psycopg2'
@@ -137,6 +134,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.templatetags.main_gravatar',
+    'main.templatetags.main_index',
     'bootstrap3',
     'formtools',
     #'django_extensions',
