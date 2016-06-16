@@ -23,11 +23,15 @@ class CardForm(PaymentForm):
     )
 
 class UserForm(CardForm):
-    name=forms.CharField(required=True)
+    name = forms.CharField(required=True)
 
-    email=forms.EmailField(required=True)
+    email = forms.EmailField(required=True)
 
-    password=forms.CharField(
+    HORDE_ALLIANCE = (("alliance", "alliance"),
+                      ("horde",'horde'))
+    fraction = forms.Select(widget=forms.RadioSelect ,choices=HORDE_ALLIANCE)
+
+    password = forms.CharField(
         required=True,
         label=('Password'),
         widget=forms.PasswordInput(render_value=False)

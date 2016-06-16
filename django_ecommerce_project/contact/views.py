@@ -6,9 +6,8 @@ from django.contrib import messages
 
 def contact(request):
     if request.method == 'POST':
-        print(request.POST)
         form = ContactView(request.POST)
-        print(form.is_valid())
+        print(request.POST)
         if form.is_valid():
             our_form = form.save(commit=False)
             our_form.save()

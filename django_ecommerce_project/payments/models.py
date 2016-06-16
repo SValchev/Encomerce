@@ -10,16 +10,18 @@ class UnpadaidUser(models.Model):
 class User(AbstractBaseUser):
     name = models.CharField(max_length=225)
     email = models.EmailField(max_length=225, unique=True)
-    last_4_digits = models.CharField(max_length=4,blank=True,null=True)
+    last_4_digits = models.CharField(max_length=4, blank=True, null=True)
     stripe_id = models.CharField(max_length=225)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    rank = models.CharField(max_length=225, default="Scary Noob")
+    fraction = models.CharField(max_length=225)
 
     USERNAME_FIELD = 'email'
 
     @classmethod
-    def create(cls, name, email, last_4_digits, stripe_id, password):
-        user = User(name=name, email=email, last_4_digits=last_4_digits, stripe_id=id)
+    def create(cls, name, email, last_4_digits, password, fraction, stripe_id=''):
+        user = User(name=name, email=email, last_4_digits=last_4_digits, stripe_id=stripe_id)
         user.set_password(password)
 
         user.save()

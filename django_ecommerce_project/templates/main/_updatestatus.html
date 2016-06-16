@@ -1,0 +1,15 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Report your status</h3>
+    </div>
+    <div class="panel-body">
+        <form action="{% url 'report_status' %}" method="post" role="form">{% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="status" class="form-control" placeholder="{{ user.name }} what is your status?">
+                <span class="input-group-btn">
+              <button class="btn btn-primary" type="submit">Submit!</button>
+            </span>
+            </div>
+        </form>
+    </div>
+</div>

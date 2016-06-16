@@ -1,6 +1,2 @@
-<div class="clearfix">
-  {{ field.label_tag }}
-  <div class="input">
-    {{ field }}
-  </div>
-</div>
+{% load bootstrap3 %}
+      {% bootstrap_field field set_required=True %}

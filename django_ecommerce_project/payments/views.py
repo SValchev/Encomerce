@@ -16,93 +16,102 @@ def soon():
     soon = datetime.date.today() + datetime.timedelta(days=30)
     return {'month':soon.month, 'year':soon.year }
 
-
 def sign_in(request):
     user = None
 
     if request.method == 'POST':
         form = SigninForm(request.POST)
         if form.is_valid():
-            result=User.objects.filter(email=form.cleaned_data['email'])
+            result = User.objects.filter(email=form.cleaned_data['email'])
             if len(result) == 1:
-                if result[0].check_password(form.cleaned_data['password']):
-                    return HttpResponseRedirect('/')
-                else:
-                    form.add_error("Incorect email or password")
+            #    if result[0].check_password(form.cleaned_data['password']):
+                request.session['user']=result[0].pk
+                return HttpResponseRedirect('/')
+                #else:
+                #    form.addError("Incorect email or password")
             else:
-                form.add_error("Incorect email or password")
+                form.addError("Incorect email or password")
     else:
         form = SigninForm()
 
     print((form.non_field_errors()))
 
-    return render_to_response('payments/sign_in.html',{'form':form, 'user':user}, context_instance=RequestContext(request))
-
+    return render_to_response(
+        'payments/sign_in.html',
+        {
+            'form':form,
+            'user':user
+        },
+        context_instance=RequestContext(request)
+    )
 
 def sign_out(request):
     del request.session['user']
     return HttpResponseRedirect('/')
 
-
 def register(request):
     user = None
-    if request.method=='POST':
+    if request.method == 'POST':
         form = UserForm(request.POST)
-        if form.is_valid():
-            customer = stripe.Customer.create(
-                 email=form.cleaned_data['email'],
-                 description=form.cleaned_data['name'],
-                 card=form.cleaned_data['stripe_token'],
-                 plan='gold',
-             )
 
-            # custerm = stripe.Charge.create(
-            #      description=form.cleaned_data['email'],
-            #      card=form.cleaned_data['stripe_token'],
-            #      amount='5000',
-            #      currency='usd',
+        if form.is_valid():
+            #update based on your billing method (subscription vs one time)
+            # customer = Customer.create(
+            #     email=form.cleaned_data['email'],
+            #     description=form.cleaned_data['name'],
+            #     card=form.cleaned_data['stripe_token'],
+            #     plan="gold",
             # )
+            customer = stripe.Charge.create(
+                description=form.cleaned_data['email'],
+                card={
+                    'number': '4242424242424242',
+                    'exp_month': 10,
+                    'exp_year': 2016
+                    },
+                amount="5000",
+                currency="usd"
+            )
 
             cd = form.cleaned_data
 
-            try:
-                user = User.create(
-                    name=cd['name'],
-                    email=cd['email'],
-                    last_4_digits=cd['last_4_digits'],
-                    stripe_id='',
-                    password=cd['password']
-                )
+            from django.db import transaction
 
-                if customer:
-                    user.stripe_id = customer.id
-                    user.save()
-                else:
-                    UnpadaidUser(email=cd['email']).save()
+            try:
+                with transaction.atomic():
+                    user = User.create(cd['name'], cd['email'], cd['password'],
+                                       cd['last_4_digits'], cd['fraction'], stripe_id="")
+
+                    if customer:
+                        user.stripe_id = customer.id
+                        user.save()
+                    else:
+                        UnpaidUsers(email=cd['email']).save()
 
             except IntegrityError:
-                form.add_error(cd['email'] + " is already a mamber!")
+                import traceback
+                form.addError(cd['email'] + ' is already a member' +
+                              traceback.format_exc())
                 user = None
             else:
-                request.session['user']=user.pk
+                request.session['user'] = user.pk
                 return HttpResponseRedirect('/')
 
     else:
         form = UserForm()
 
     return render_to_response(
-            'payments/register.html',
-            {
-             'form':form,
-             'months':list(range(1,12)),
-             'publishable':settings.STRIPE_PUBLISH,
-             'soon':soon(),
-             'user':user,
-             'years':list(range(2011,2036)),
-            },
-            context_instance=RequestContext(request)
-        )
-
+        'payments/register.html',
+        {
+            'form': form,
+            'months': list(range(1, 12)),
+            'publishable': settings.STRIPE_PUBLISH,
+            'soon': soon(),
+            'user': user,
+            'years': list(range(2011, 2036)),
+        },
+        context_instance=RequestContext(request)
+    )
 
 def edit(request):
     uid = request.session.get('user')

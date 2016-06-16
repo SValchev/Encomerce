@@ -1,0 +1,1 @@
+[{"model": "payments.user", "fields": {"last_login": null, "password": "pbkdf2_sha256$20000$a7fo9QEPQBpn$qNeUY+8W3tzoNGFj5SHhGbCiBZY4TndgtiXKxhNYFJ4=", "created_at": "2016-06-10T12:20:34.918Z", "email": "admin@mail.bg", "stripe_id": "ch_18KocoLYaO87kTOCyb86CUD2", "last_4_digits": "admin", "name": "admin", "updated_at": "2016-06-10T12:20:34.919Z"}, "pk": 2}]

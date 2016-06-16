@@ -1,0 +1,21 @@
+{% load main_gravatar %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Latest status reports</h3>
+    </div>
+    <div class="panel-body">
+        {% for status in report %}
+
+        <div class="media">
+            <div class="media-left media-middle">
+                <a href="#">
+                    {% gavar_img email=status.user.email alter=status.user.name size=40%}
+                </a>
+            </div>
+            <div class="media-body">
+                {{ status.status }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

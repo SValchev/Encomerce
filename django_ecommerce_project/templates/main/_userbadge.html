@@ -1,0 +1,33 @@
+{% load staticfiles %} {% load main_gravatar %}
+<div class="card hovercard">
+	<div class="cardheader" stype="background:{% static " img/horde-background.jpg "%}";>
+
+	</div>
+	<div class="avatar">
+		{% gavar_img email=user.email %}
+	</div>
+	<div class="info">
+		<div class="title">
+			<a target="_blank" href="http://scripteden.com/">{{ user.name }}</a>
+		</div>
+		<div class="desc"><strong>Rank: </strong>{{ user.rank }}</div>
+		<div class="desc"><strong>Class: </strong>High Shaman</div>
+		<div class="desc"><strong>Email: </strong><a href="">{{ user.email }}</a></div>
+	</div>
+	<!-- <div class="bottom">
+                    <a class="btn btn-primary btn-twitter btn-sm" href="https://twitter.com/webmaniac">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                    <a class="btn btn-danger btn-sm" rel="publisher"
+                       href="https://plus.google.com/+ahmshahnuralam">
+                        <i class="fa fa-google-plus"></i>
+                    </a>
+                    <a class="btn btn-primary btn-sm" rel="publisher"
+                       href="https://plus.google.com/shahnuralam">
+                        <i class="fa fa-facebook"></i>
+                    </a>
+                    <a class="btn btn-warning btn-sm" rel="publisher" href="https://plus.google.com/shahnuralam">
+                        <i class="fa fa-behance"></i>
+                    </a>
+                </div> -->
+</div>

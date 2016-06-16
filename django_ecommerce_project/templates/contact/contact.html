@@ -1,17 +1,10 @@
-{% extends '__base.html' %}
-
-
-{% block content %}
-{% load bootstrap3 %}
-
+{% extends '__base.html' %} {% block content %} {% load bootstrap3 %}
 <h3><center>Contact Us</center></h3>
 
-<form action='{% url 'contact' %}' method='POST'>
-    {% csrf_token %}
-
-    {% bootstrap_form form %}
-
-    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
-</form>
-
+<div class="lg-col-3">
+    <form action='{% url 'contact' %}' method='POST'>
+        {% csrf_token %} {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </form>
+</div>
 {% endblock %}

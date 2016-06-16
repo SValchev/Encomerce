@@ -1,14 +1,12 @@
 {% extends "__base.html" %}
+{% load bootstrap3 %}
 {% block content %}
-  <div class="row">
-    <div class="span6 columns">
-    </div>
-  </div>
-  <div class="page-header">
+  <div class="page-header text-center">
     <h1>Sign In</h1>
   </div>
   <div class="row">
-    <div class="span6 columns">
+      <div class="col-xs-offset-2 col-xs-8 col-sm-offset-4 col-sm-4 col-md-offset-4 col-md-4 col-lg-offset-4 col-lg-4">
+
       <form accept-charset="UTF-8" action="{% url 'sign_in' %}" class="form-stacked" method="post">{% csrf_token %}
         {% if form.is_bound and not form.is_valid %}
         <div class="alert-message block-message error">
@@ -19,16 +17,19 @@
             {% endfor %}
             {% endfor %}
             {% for error in form.non_field_errors %}
-            <p>{{ error }}</p>
+
+            <p>{% bootstrap_form_errors form %}</p>
+
             {% endfor %}
           </div>
         </div>
         {% endif %}
-        {% for field in form %}{% include "field.html" %}{% endfor %}
+        {% for field in form %}{% include "payments/_field.html" %}{% endfor %}
         <div class="actions">
           <input class="btn primary" name="commit" type="submit" value="Sign in">
         </div>
       </form>
-    </div>
+  </div>
+
   </div>
 {% endblock %}
