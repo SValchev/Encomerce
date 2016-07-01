@@ -23,20 +23,16 @@ class User(AbstractBaseUser):
     def create(cls, name, email, last_4_digits, password, fraction, stripe_id=''):
         user = User(name=name, email=email, last_4_digits=last_4_digits, stripe_id=stripe_id)
         user.set_password(password)
-
         user.save()
 
         return user
-
 
     @classmethod
     def get_user_by_id(cls,user_id):
         return cls.objects.get(pk=user_id)
 
-
     def __str__(self):
         return self.email
-
 
     def __repr__(self):
         return self.__str__()

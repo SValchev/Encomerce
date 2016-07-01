@@ -9,7 +9,7 @@ def index(request):
     if uid is None:
         return render_to_response('main/index.html')
     else:
-        status = Status.objects.all().order_by('-time_added')[:20]
+        status = Status.objects.all().filter().order_by('-time_added')[:20]
 
         return render_to_response(
                                   'main/user.html',

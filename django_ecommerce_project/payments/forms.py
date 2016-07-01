@@ -5,9 +5,11 @@ class PaymentForm(forms.Form):
     def addError(self, message):
         self._errors[NON_FIELD_ERRORS] = self.error_class([message])
 
+
 class SigninForm(PaymentForm):
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True, widget=forms.PasswordInput(render_value=False))
+
 
 class CardForm(PaymentForm):
     last_4_digits= forms.CharField(
@@ -22,14 +24,11 @@ class CardForm(PaymentForm):
         widget=forms.HiddenInput(),
     )
 
+
 class UserForm(CardForm):
     name = forms.CharField(required=True)
 
     email = forms.EmailField(required=True)
-
-    HORDE_ALLIANCE = (("alliance", "alliance"),
-                      ("horde",'horde'))
-    fraction = forms.ChoiceField(widget=forms.RadioSelect ,choices=HORDE_ALLIANCE)
 
     password = forms.CharField(
         required=True,

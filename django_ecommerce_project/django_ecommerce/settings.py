@@ -18,18 +18,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DB_ENGINE = 'django.db.backends.sqlite3' if DEBUG else'django.db.backends.postgresql_psycopg2'
-
 DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.sqlite3',
+        'ENGINE':'django.db.backends.postgresql_psycopg2',
         #'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'test.db',                      # Or path to database file if using sqlite3.
+        'NAME': 'django_warcraft',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': '',
+        'USER': 'svalchev',
         'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '5432',                      # Set to empty string for default.
     }
 }
 
@@ -142,6 +140,8 @@ INSTALLED_APPS = (
     'main',
     'payments',
     'contact',
+    'rest_framework',
+    'djangular_polls',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

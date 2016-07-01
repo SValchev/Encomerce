@@ -1,4 +1,6 @@
-{% extends "__base.html" %} {% block content %}
+{% extends "__base.html" %}
+{% load static %}
+{% block content %}
 
 <div class="row member-page">
 
@@ -9,9 +11,16 @@
     <div class="col-lg-offset-1 col-lg-8 col-md-8 col-sm-8">
             {% include "main/_updatestatus.html" %}
             {% include "main/_lateststatus.html" %}
+            {% include "djangular_polls/_polls.html" %}
     </div>
 
 </div>
 
 <p class="text-center">Click <a href="{% url 'edit' %}">here</a> to make changes to your credit card.</p>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static "js/angular.min.js" %}" type="text/javascript"></script>
+<script src="{% static "js/userPollCtrl.js" %}" type="text/javascript"></script>
+
 {% endblock %}

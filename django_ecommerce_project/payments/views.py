@@ -10,7 +10,7 @@ import datetime
 import socket
 from locale import currency
 
-stripe.api_key=settings.STRIPE_SECRET
+stripe.api_key = settings.STRIPE_SECRET
 
 def soon():
     soon = datetime.date.today() + datetime.timedelta(days=30)
@@ -24,11 +24,11 @@ def sign_in(request):
         if form.is_valid():
             result = User.objects.filter(email=form.cleaned_data['email'])
             if len(result) == 1:
-            #    if result[0].check_password(form.cleaned_data['password']):
-                request.session['user']=result[0].pk
-                return HttpResponseRedirect('/')
-                #else:
-                #    form.addError("Incorect email or password")
+                if result[0].check_password(form.cleaned_data['password']):
+                    request.session['user'] = result[0].pk
+                    return HttpResponseRedirect('/')
+                else:
+                    form.addError("Incorect email or password")
             else:
                 form.addError("Incorect email or password")
     else:
@@ -52,7 +52,11 @@ def sign_out(request):
 def register(request):
     user = None
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        print('-'*50)
+        print(request.POST)
+        print('-'*50)
+
+        form = UserForm(request.POST['fraction'])
         print(form.is_valid())
         if form.is_valid():
             #update based on your billing method (subscription vs one time)
@@ -73,16 +77,14 @@ def register(request):
                 currency="usd"
             )
 
-
             cd = form.cleaned_data
 
             from django.db import transaction
 
             try:
                 with transaction.atomic():
-                    user = User.create(cd['name'], cd['email'], cd['password'],
-                                       cd['last_4_digits'], cd['fraction'], stripe_id="")
-
+                    user = User.create(name=cd['name'], email=cd['email'], password=cd['password'],
+                                       last_4_digits=cd['last_4_digits'], fraction=request.POST['fraction'], stripe_id="")
                     if customer:
                         user.stripe_id = customer.id
                         user.save()

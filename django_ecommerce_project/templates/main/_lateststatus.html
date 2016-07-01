@@ -8,14 +8,15 @@
 
         <div class="media">
             <div class="media-left media-middle">
-                <a href="#">
-                    {% gavar_img email=status.user.email alter=status.user.name size=40%}
+                <a href="#" data-toggle="tooltip" title="{{user.name}}">
+                    {% gavar_img email=status.user.email fraction=status.user.fraction alter=status.user.name size=40%}
                 </a>
             </div>
             <div class="media-body">
                 {{ status.status }}
             </div>
         </div>
+
         {% endfor %}
     </div>
 </div>
